@@ -1,0 +1,41 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title> Home </ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<div class="ion-padding" id="PannelHome">
+		<h2>Register the PC to control</h2>
+		<div id="PannelHomeRegister">
+			<table>
+				<tbody>
+					<tr>
+						<td>HOST</td>
+						<td><input type="text" id="PannelHomeIP" placeholder="ex: 192.168.1.11 or www.mysite.com"></td>
+					</tr>
+					<tr>
+						<td>PORT</td>
+						<td><input type="number" id="PannelHomePORT" placeholder="ex: 25000(default port)"></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<button id="PannelHomeRegister" onclick="app.TestAndRegister();">Register</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<h2>Quick Acces</h2>
+		<div id="PannelHomeList">
+		</div>
+	</div>
+	<div id="PannelControl">
+		<div id="ControlsListTabs">
+		TABS
+		</div>
+		<div id="ControlsListGrids">
+		GRIDS
+		</div>
+	</div>
+</ion-content>

@@ -1,0 +1,7 @@
+{
+  "name": "Remote",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
