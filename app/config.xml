@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.lordkbx.worshop.remote.android" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Remote Control</name>
+    <description>Sample Apache Cordova App</description>
+    <author email="kevboulain@gmail.com" href="https://www.developpez.net/forums/u638612/tiranuskbx/">Boulain Kevin</author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="ws://*" />
+    <allow-intent href="wss://*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <allow-intent href="*" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <preference name="loadUrlTimeoutValue" value="700000" />
+		<preference name="AndroidPersistentFileLocation" value="Compatibility" />
+    </platform>
+    <preference name="allowFileAccessFromFileURLs" value="true" />
+    <allow-navigation href="ws://192.168.1.*" />
+    <allow-navigation href="*" />
+</widget>

@@ -1,0 +1,61 @@
+{
+  "_from": "cordova-plugin-datagram4",
+  "_id": "cordova-plugin-datagram4@1.0.2",
+  "_inBundle": false,
+  "_integrity": "sha512-wfYZTiVQfk13nlloi/le6NVne92ys4n9AVyQzWL0cXPB3pCJKX915xjYOkvG8GJh43NKF4HzPDObPoyFS43iSw==",
+  "_location": "/cordova-plugin-datagram4",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-datagram4",
+    "name": "cordova-plugin-datagram4",
+    "escapedName": "cordova-plugin-datagram4",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-datagram4/-/cordova-plugin-datagram4-1.0.2.tgz",
+  "_shasum": "9b2e982aa637d03322d08c9141f972549a157677",
+  "_spec": "cordova-plugin-datagram4",
+  "_where": "D:\\CODES\\VS\\RemoteCommander\\RemoteAndroid\\app",
+  "author": {
+    "name": "LordKBX"
+  },
+  "bugs": {
+    "url": "https://github.com/LordKBX/cordova-plugin-file-hash/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-file-hash",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "deprecated": false,
+  "description": "cordova-plugin-datagram4",
+  "homepage": "https://github.com/LordKBX/cordova-plugin-file-hash#readme",
+  "keywords": [
+    "cordova",
+    "cordova-plugin",
+    "cordova-plugin-datagram4",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "license": "Apache 2.0",
+  "main": "datagram.js",
+  "name": "cordova-plugin-datagram4",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LordKBX/cordova-plugin-file-hash.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.2"
+}

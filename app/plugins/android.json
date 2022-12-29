@@ -1,0 +1,47 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-console": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-plugin-datagram4": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-plugin-dialogs": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-plugin-file": {
+      "ANDROIDX_WEBKIT_VERSION": "1.4.0",
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-plugin-nativestorage": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-plugin-screen-orientation": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    },
+    "cordova-sqlite-storage": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    }
+  },
+  "dependent_plugins": {
+    "es6-promise-plugin": {
+      "PACKAGE_NAME": "com.lordkbx.worshop.remote.android"
+    }
+  }
+}
