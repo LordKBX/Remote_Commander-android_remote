@@ -39,6 +39,8 @@ app =
 	listImages: [],
 	listImagesObjects: [],
 	listImagesToGet: [],
+	arrayBlobs: {},
+	arrayBlobsURL: {},
 	PasswordDialog: null,
 	purgeFileName(path){ return path.replace(new RegExp('\\/', 'g'), '__').replace(new RegExp('\\\\', 'g'), '__').replace(new RegExp(' ', 'g'), '-');},
 	isCachedImg(ref){
@@ -351,6 +353,8 @@ app =
 							app.db.transaction(function (tx){ tx.executeSql("UPDATE SERVERSv2 SET PASS=?, SAVEDPASS=? WHERE IP = ? AND PORT = ?", ['',0,app.servAddr, app.servPort], function (tx, res){}); });
 							}
 						alert("invalid login"); 
+						$('#password').val("");
+						app.PasswordDialog.dialog( "open" );
 						}
 				}
 				if (tdata["function"] == "Pong")
@@ -386,16 +390,17 @@ app =
 											last_update: ins
 										});
 										console.log('cdvfile URI: ' + fileEntry.toInternalURL());
-										app.listImagesObjects.push(new Image());
-										app.listImagesObjects[app.listImagesObjects.length - 1].onload = function(){ 
-											console.log("img loaded");
-											try{
-												$('.control-grid-button[image="' + retSave + '"]')[0].style.backgroundImage="url('" + this.src + "')";
-												}
-											catch(err){ console.error(err); console.log(this.src); }
-											
-											}
-										app.listImagesObjects[app.listImagesObjects.length - 1].src = fileEntry.toInternalURL();
+										$('.control-grid-button[image="' + retSave + '"]').css('background-image',"url('" + fileEntry.toInternalURL() + "')");
+										
+										img = new Image();
+										txtev = "function(){\
+										try{ $('.control-grid-button[image=\"" + retSave + "\"]').css('background-image',\"url('" + fileEntry.toInternalURL() + "')\"); }\
+											catch(err){ console.error(err); console.log(this.src); }\
+										}";
+										console.log(txtev);
+										img.onload = eval(txtev);
+										app.listImagesObjects.push(img);
+										img.src = fileEntry.toInternalURL();
 									});
 								});
 							}
@@ -408,6 +413,38 @@ app =
 								$('.control-grid-button[image="' + fpath + '"]')[0].style.backgroundImage="url('" + this.src + "')";
 								});
 							}
+					}
+				}
+				if (tdata["function"] == "GetSoundInfo")
+				{
+					//console.log('mute', tdata["mute"]?'true':'false');
+					//console.log('vol', ''+(tdata["vol"] * 100)+'%');
+					//console.log('mediaInfo', tdata["mediaInfo"]);
+					if($('div[type="MediaInfo"]').length > 0){
+						mediaInfo = JSON.parse(tdata["mediaInfo"]);
+						tid = mediaInfo["Title"] + '-' + mediaInfo["AlbumTitle"] + '-' + mediaInfo["Artist"];
+						
+						if(app.arrayBlobs[tid] === undefined){
+							if(mediaInfo["Thumbnail"] != null){
+								console.log("GOT Thumbnail!");
+								app.arrayBlobs[tid] = b64toBlob(mediaInfo["Thumbnail"], "image/jpeg");
+								app.arrayBlobsURL[tid] = URL.createObjectURL(app.arrayBlobs[tid]);
+								console.log(app.arrayBlobsURL[tid]);
+								$('div[type="MediaInfo"] img').attr('src', app.arrayBlobsURL[tid]);
+								}
+							else{ $('div[type="MediaInfo"] img').attr('src', ''); }
+							}
+						else{ $('div[type="MediaInfo"] img').attr('src', app.arrayBlobsURL[tid]); }
+						
+						$('div[type="MediaInfo"] .Title').text(mediaInfo["Title"]);
+						$('div[type="MediaInfo"] .AlbumTitle').text(mediaInfo["AlbumTitle"]);
+						$('div[type="MediaInfo"] .Artist').text(mediaInfo["Artist"]);
+						$('div[type="MediaInfo"] .Genres').text(mediaInfo["Genres"]);
+						$('div[type="MediaInfo"] .Tracks').text(""+mediaInfo["TrackNumber"]+" / "+mediaInfo["AlbumTrackCount"]);
+						if(mediaInfo["Title"] == null || mediaInfo["Title"].trim() == ""){ $('div[type="MediaInfo"] .LineTitle').css('display', 'none'); } else { $('div[type="MediaInfo"] .LineTitle').css('display', 'block'); }
+						if(mediaInfo["AlbumTitle"] == null || mediaInfo["AlbumTitle"].trim() == ""){ $('div[type="MediaInfo"] .LineAlbumTitle').css('display', 'none'); } else { $('div[type="MediaInfo"] .LineAlbumTitle').css('display', 'block'); }
+						if(mediaInfo["Artist"] == null || mediaInfo["Artist"].trim() == ""){ $('div[type="MediaInfo"] .LineArtist').css('display', 'none'); } else { $('div[type="MediaInfo"] .LineArtist').css('display', 'block'); }
+						if(mediaInfo["Genres"] == null || mediaInfo["Genres"].trim() == ""){ $('div[type="MediaInfo"] .LineGenres').css('display', 'none'); } else { $('div[type="MediaInfo"] .LineGenres').css('display', 'block'); }
 					}
 				}
 			}
@@ -576,55 +613,93 @@ app =
 				grid.setAttribute('style', gs);
 				grid.setAttribute('activ', (index == 0) ? '1' : '0');
 				grid.setAttribute('tid', escape(tdata[index]["name"]));
-				for (indexB in tdata[index]["buttons"])
+				if(tdata[index]["blocks"] === undefined){ tdata[index]["blocks"] = tdata[index]["buttons"]; }
+				for (indexB in tdata[index]["blocks"])
 				{
-					bcostyle = "";
-					button = document.createElement('div');
-					button.setAttribute('class', 'control-grid-button');
-					button.setAttribute('bid', escape(tdata[index]["name"]) + '_' + tdata[index]["buttons"][indexB]["id"]);
-					button.setAttribute('onclick', 'app.executeMacro("' + tdata[index]["buttons"][indexB]["macro"] + '", "' + tdata[index]["buttons"][indexB]["sound"] + '");');
-					if (tdata[index]["buttons"][indexB]["icon"] != "")
-					{
-						hh = app.purgeFileName(tdata[index]["buttons"][indexB]["icon"]);
-						button.setAttribute('image', hh);
-						imgp = app.getCachedImg(hh);
-						if(imgp == null){ app.getImageUpdateList(tdata[index]["buttons"][indexB]["icon"]); }
-						else{ 
-							bcostyle = bcostyle + "background-image:"+"url('" + imgp.data + "')"+";";
-							//$('.control-grid-button[image="' + hh + '"]').css('background-image',"url('" + imgp.data + "')"); 
-							}
-						
-						bcostyle = bcostyle + "background-repeat: no-repeat; background-size: 95%; background-position: center;";
-					}
-
-					try
-					{
-						dfg = tdata[index]["buttons"][indexB]["style"].replace(new RegExp(" ", "g"), "").split(";");
-						for (hj in dfg)
+					if(tdata[index]["blocks"][indexB]["type"] === undefined){ tdata[index]["blocks"][indexB]["type"] == "button"; }
+					if(tdata[index]["blocks"][indexB]["type"] == "button"){
+						bcostyle = "";
+						button = document.createElement('div');
+						button.setAttribute('class', 'control-grid-button');
+						button.setAttribute('bid', escape(tdata[index]["name"]) + '_' + tdata[index]["blocks"][indexB]["id"]);
+						button.setAttribute('onclick', 'app.executeMacro("' + tdata[index]["blocks"][indexB]["macro"] + '", "' + tdata[index]["blocks"][indexB]["sound"] + '");');
+						if (tdata[index]["blocks"][indexB]["icon"] != "")
 						{
-							if (dfg[hj].search(new RegExp("^color:", "i")) != -1)
+							hh = app.purgeFileName(tdata[index]["blocks"][indexB]["icon"]);
+							button.setAttribute('image', hh);
+							imgp = app.getCachedImg(hh);
+							if(imgp == null){ 
+								console.log(tdata[index]["blocks"][indexB]["icon"] + " NOT FOUND");
+								app.getImageUpdateList(tdata[index]["blocks"][indexB]["icon"]); 
+								}
+							else{ 
+								bcostyle = bcostyle + "background-image:"+"url('" + imgp.data + "')"+";";
+								//$('.control-grid-button[image="' + hh + '"]').css('background-image',"url('" + imgp.data + "')"); 
+								}
+							
+							bcostyle = bcostyle + "background-repeat: no-repeat; background-size: 95%; background-position: center;";
+						}
+
+						try
+						{
+							dfg = tdata[index]["blocks"][indexB]["style"].replace(new RegExp(" ", "g"), "").split(";");
+							for (hj in dfg)
 							{
-								bcostyle = bcostyle + "border-color:" + dfg[hj].replace("color:", "") + ";";
-								break;
+								if (dfg[hj].search(new RegExp("^color:", "i")) != -1)
+								{
+									bcostyle = bcostyle + "border-color:" + dfg[hj].replace("color:", "") + ";";
+									break;
+								}
 							}
 						}
-					}
-					catch (err)
-					{}
-					var w = parseInt(tdata[index]["buttons"][indexB]["width"], 10) * caseWidth; 
-					w = w + (4 * (parseInt(tdata[index]["buttons"][indexB]["width"], 10) - 1)) + (4*(parseInt(tdata[index]["buttons"][indexB]["width"], 10) - 1));
-					var h = parseInt(tdata[index]["buttons"][indexB]["height"], 10) * caseWidth; 
-					h = h + (4 * (parseInt(tdata[index]["buttons"][indexB]["height"], 10) - 1)) + (4*(parseInt(tdata[index]["buttons"][indexB]["height"], 10) - 1));
+						catch (err)
+						{}
+						var w = parseInt(tdata[index]["blocks"][indexB]["width"], 10) * caseWidth; 
+						w = w + (4 * (parseInt(tdata[index]["blocks"][indexB]["width"], 10) - 1)) + (4*(parseInt(tdata[index]["blocks"][indexB]["width"], 10) - 1));
+						var h = parseInt(tdata[index]["blocks"][indexB]["height"], 10) * caseWidth; 
+						h = h + (4 * (parseInt(tdata[index]["blocks"][indexB]["height"], 10) - 1)) + (4*(parseInt(tdata[index]["blocks"][indexB]["height"], 10) - 1));
 
-					button.setAttribute('style', bs +
-						'width:' + w + 'px;' +
-						'height:' + h + 'px;' +
-						'line-height:' + (h + (tdata[index]["buttons"][indexB]["height"] * 12)) + 'px;' +
-						tdata[index]["buttons"][indexB]["style"] + bcostyle);
-					span = document.createElement('div');
-					span.innerText = tdata[index]["buttons"][indexB]["name"];
-					button.appendChild(span);
-					grid.appendChild(button);
+						button.setAttribute('style', bs +
+							'width:' + w + 'px;' +
+							'height:' + h + 'px;' +
+							'line-height:' + (h + (tdata[index]["blocks"][indexB]["height"] * 12)) + 'px;' +
+							tdata[index]["blocks"][indexB]["style"] + bcostyle);
+						span = document.createElement('div');
+						span.innerText = tdata[index]["blocks"][indexB]["name"];
+						button.appendChild(span);
+						grid.appendChild(button);
+					}
+					else if(tdata[index]["blocks"][indexB]["type"] == "module"){
+						bcostyle = '';
+						var w = parseInt(tdata[index]["blocks"][indexB]["width"], 10) * caseWidth; 
+						w = w + (4 * (parseInt(tdata[index]["blocks"][indexB]["width"], 10) - 1)) + (4*(parseInt(tdata[index]["blocks"][indexB]["width"], 10) - 1));
+						var h = parseInt(tdata[index]["blocks"][indexB]["height"], 10) * caseWidth; 
+						h = h + (4 * (parseInt(tdata[index]["blocks"][indexB]["height"], 10) - 1)) + (4*(parseInt(tdata[index]["blocks"][indexB]["height"], 10) - 1));
+						block = document.createElement('div');
+						block.setAttribute('class', 'control-grid-module');
+						block.setAttribute('type', tdata[index]["blocks"][indexB]["macro"]);
+						block.setAttribute('style', bs +
+							'width:' + w + 'px;' +
+							'height:' + h + 'px;' +
+							'line-height:' + (h + (tdata[index]["blocks"][indexB]["height"] * 12)) + 'px;' +
+							tdata[index]["blocks"][indexB]["style"] + bcostyle);
+						if(tdata[index]["blocks"][indexB]["macro"] == "MediaInfo"){
+							block.innerHTML = '<table><tbody>\
+								<tr>\
+									<td style="width:'+(w*0.3 + 8)+'px;" rowspan="5"><img class="Thumbnail" style="width:'+(w * 0.3)+'px;height:'+(w * 0.3)+'px;"/></td>\
+									<td>\
+										<p class="LineTitle">Title: <span class="Title"></span></p>\
+										<p class="LineAlbumTitle">Album: <span class="AlbumTitle"></span></p>\
+										<p class="LineArtist">Artist: <span class="Artist"></span></p>\
+										<p class="LineGenres">Genres: <span class="Genres"></span></p>\
+										<p class="LineTracks">Tracks: <span class="Tracks"></span></p>\
+									</td>\
+								</tr>\
+							</tbody></table>';
+							}
+						grid.appendChild(block);
+						}
+					else{}
 				}
 				$("#ControlsListGrids").append(grid);
 			}
@@ -671,7 +746,10 @@ app =
 			if(imgp == null){ list3.push(list[id]); }
 			else{  $('.control-grid-button[image="' + list[id] + '"]')[0].style.backgroundImage="url('" + imgp.data + "')"; }
 			}
-		if(list3.length > 0) { app.SendToServerEncoded('{"function":"GetImages","references":' + JSON.stringify(list3) + '}'); }
+		if(list3.length > 0) { 
+			//app.socket.send('{"function":"GetImages","references":' + JSON.stringify(list3) + '}'); 
+			app.SendToServerEncoded('{"function":"GetImages","references":' + JSON.stringify(list3) + '}'); 
+			}
 	}
 };
 

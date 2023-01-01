@@ -2,9 +2,7 @@
 <html>
 	<head>
         <meta http-equiv="Content-Security-Policy" 
-         content="default-src *; 
-                  style-src * 'self' 'unsafe-inline' 'unsafe-eval'; 
-                  script-src * 'self' 'unsafe-inline' 'unsafe-eval';">
+         content="worker-src blob:; child-src blob: gap:; default-src gap://ready *; style-src 'self' 'unsafe-inline' 'unsafe-eval' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; media-src *; img-src 'self' blob: data:">
 		<meta charset="utf-8">
         <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta name="format-detection" content="telephone=no">
@@ -29,11 +27,6 @@
             script.setAttribute('type', 'text/javascript');
             script.setAttribute('src', baseUrl+'cordova.js');
             document.querySelector('head').appendChild(script);
-            
-            meta = document.createElement('meta');
-            meta.setAttribute('http-equiv', 'Content-Security-Policy');
-            meta.setAttribute('content', "default-src gap://ready *; style-src 'self' 'unsafe-inline' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; media-src *; img-src 'self' data:");
-            document.querySelector('head').appendChild(meta);
             
         </script>
 	</head>
@@ -68,15 +61,8 @@
 				<div id="ControlsListTabs">
 				TABS
 				</div>
+				<button onclick="location.reload();" style="position: absolute; top: 20px; right: 2px; width: 40px; height: 40px; background-image: url(./refresh.png); background-repeat: no-repeat; background-size: 100%;"></button>
 				<div id="ControlsListGrids">
-				GRIDS
-				</div>
-			</div>
-			<div class="Pannel" id="PannelControl2" style="display:none;">
-				<div id="Controls2ListTabs">
-				TABS
-				</div>
-				<div id="Controls2ListGrids">
 				GRIDS
 				</div>
 			</div>
